@@ -1,0 +1,49 @@
+﻿<Window x:Class="图像超分工具.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:图像超分工具"
+        mc:Ignorable="d"
+        Title="图像批量超分工具" Height="634" Width="1132"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style x:Key="MenuButton" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontFamily" Value="YouYuan"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Margin" Value="10"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Gray"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="90"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <!--工具菜单显示-->
+        <DockPanel LastChildFill="True">
+            <Button DockPanel.Dock="Bottom" Cursor="Hand" Click="Setting_Click" Style="{StaticResource MenuButton}">
+                <StackPanel Orientation="Vertical">
+                    <Image Source="image/setting.png" Width="40"/>
+                    <TextBlock Text="设置" TextAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            <StackPanel Orientation="Vertical">
+                <Button Style="{StaticResource MenuButton}" Click="NCNN_Click">
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="image/listico.png" Width="40"/>
+                        <TextBlock Text="批量超分" TextAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </DockPanel>
+        <!--组设置结束-->
+        <Frame x:Name="MainContent"  Grid.Column="2" NavigationUIVisibility="Hidden"/>
+    </Grid>
+</Window>
