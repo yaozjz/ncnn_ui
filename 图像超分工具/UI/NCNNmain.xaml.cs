@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -124,28 +125,41 @@ namespace 图像超分工具.UI
         {
             //获取输入文件夹下的所有文件
             var files = model.ToolsUsed.Get_Folder(Properties.Settings.Default.SrcFolder);
-            //清空输出文件夹：
-            model.ToolsUsed.ClearFoderFile(Properties.Settings.Default.DrtFolder);
+            List<string> files_name = new List<string>();
             if (files != null)
             {
-                foreach (string file in files)
+                foreach (var file in files)
                 {
-                    string file_name = System.IO.Path.GetFileName(file);
-                    string model_name = model.GAN_Model_Name.NCNN_Name[ncnnModelSeleced.SelectedIndex];
-                    string inputs = file;
-                    string outputs = Properties.Settings.Default.DrtFolder + "/" + file_name;
-                    bool res = model.ToolsUsed.Running_GAN(model_name, inputs, outputs, GAN_models.SelectedItem.ToString());
-
-                    if (res)
-                    {
-                        Debug.AppendText("已处理" + file_name + "\r");
-                    }
-                    else
-                    {
-                        Debug.AppendText("处理异常.\r");
-                    }
+                    //转化为绝对路径，以确保异步线程路径正确
+                    files_name.Add(System.IO.Path.GetFullPath(file));
                 }
-                ShowLog("图片已全部超分完毕。");
+                //清空输出文件夹：
+                model.ToolsUsed.ClearFoderFile(Properties.Settings.Default.DrtFolder);
+            }
+            else
+            {
+                ShowLog("没有找到图片文件");
+                return;
+            }
+
+            if (files_name != null)
+            {
+                var arg = new model.GAN_Func_Class
+                {
+                    files = files_name,
+                    models = GAN_models.SelectedItem.ToString(),
+                    other_arg = OtherArg.Text.Trim(),
+                    model_name = model.GAN_Model_Name.NCNN_Name[ncnnModelSeleced.SelectedIndex],
+                    output_folder = System.IO.Path.GetFullPath(Properties.Settings.Default.DrtFolder),
+                    tb = Debug
+                };
+                foreach (var file in files)
+                {
+                    Console.WriteLine("列表：" + file);
+                }
+                //后台线程
+                Thread t = new Thread(model.ToolsUsed.Running_GAN) { IsBackground = true };
+                t.Start(arg);
             }
         }
         //点击并显示图片
@@ -163,16 +177,18 @@ namespace 图像超分工具.UI
                 ImgSrc.Source = bitmapImage;
                 bitmapImage.UriSource = null;
 
-                //ShowLog(System.IO.Path.GetFullPath(selections.ImgPath));
-            }
-            else
-            {
-                ShowLog("图片显示失败。");
+                //ShowLog(selections.ImgPath);
             }
         }
 
         private void Debug_TextChange(object sender, TextChangedEventArgs e)
         {
+            //防止内存泄漏
+            if(Debug.LineCount > 1001)
+            {
+                Debug.Text = Debug.Text.Substring(Debug.GetLineText(0).Length + 1);
+            }
+            //跟随滚动
             Debug.ScrollToEnd();
         }
         //在资源管理器中打开输出文件夹

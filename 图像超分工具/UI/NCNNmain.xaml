@@ -7,43 +7,8 @@
       mc:Ignorable="d" 
       d:DesignHeight="678" d:DesignWidth="1132"
       Title="NCNNmain">
-    <Page.Resources>
-        <ResourceDictionary >
-            <Style x:Key="dgButton" TargetType="Button" >
-                <Setter Property="FontSize" Value="40"/>
-                <Setter Property="Content" Value="按钮"/>
-                <Setter Property="Foreground" Value="White"/>
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <!--<RadialGradientBrush>
-                        <GradientStop Color="#FFC564B8" Offset="0"/>
-                        <GradientStop Color="#FFF57A7A" Offset="1"/>
-                    </RadialGradientBrush>-->
-                        <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
-                            <GradientStop Color="#FFC564B8" Offset="0"/>
-                            <GradientStop Color="#FFF57A7A" Offset="1"/>
-                        </LinearGradientBrush>
-                    </Setter.Value>
-                </Setter>
-            </Style >
-            <ControlTemplate x:Key="buttonTemplate" TargetType="Button" >
-                <Border BorderThickness="1" CornerRadius="10" Background="{TemplateBinding Background}">
-                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                </Border>
-                <!--<Grid >
-                    <Ellipse Name="faceEllipse" Height="50" Width="100" Fill="{TemplateBinding Button.Background}"/>
-                    <TextBlock Name="txtBlock"  />
-                </Grid >-->
-                <ControlTemplate.Triggers >
-                    <Trigger Property="Button.IsMouseOver" Value="True">
-                        <Setter Property="Button.Background" Value="Purple"/>
-                    </Trigger >
-                </ControlTemplate.Triggers >
-            </ControlTemplate >
-        </ResourceDictionary >
-    </Page.Resources>
     <!-- 显示具体内容 -->
-    <DockPanel LastChildFill="True" Background="#FFFFF9F0">
+    <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Top" FontSize="14" FontFamily="YouYuan">
             <MenuItem Header="_打开文件" Click="OpenImg_clik"/>
             <MenuItem Header="_检查文件" Click="CheckList_clik"/>
@@ -58,7 +23,7 @@
                 <RowDefinition Height="3*"/>
             </Grid.RowDefinitions>
             <!--图片显示区域-->
-            <Grid Grid.Row="0" Background="#BDBDBD">
+            <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="5"/>
@@ -78,8 +43,8 @@
                 <Image x:Name="ImgSrc" Grid.Column="2" Width="Auto"/>
             </Grid>
             <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Background="Gray"/>
-            <DockPanel Grid.Row="2" LastChildFill="True" Background="#AEAEAE ">
-                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <DockPanel Grid.Row="2" LastChildFill="True">
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Background="Transparent">
                     <TextBlock Text="算法类型：" VerticalAlignment="Center" FontSize="16" FontFamily="YouYuan"/>
                     <ComboBox Width="200" x:Name="ncnnModelSeleced" Margin="10 0 10 0" SelectionChanged="ncnnSelectionChange">
                         <ComboBoxItem IsSelected="True">Real ESRGAN</ComboBoxItem>
@@ -93,9 +58,9 @@
                 <!--运行按钮设计-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
                     <Button x:Name="OK_button" Width="100" Height="50" Content="开始运行" 
-                                FontSize="20" FontFamily="YouYuan" BorderThickness="0" Margin="10" Foreground="White" 
+                                FontSize="20" FontFamily="YouYuan" BorderThickness="0" Margin="10"
                                 Style="{StaticResource dgButton}" Template="{StaticResource buttonTemplate}"
-                                Click="Begingo_Click" Cursor="Hand"/>
+                                Click="Begingo_Click"/>
                 </StackPanel>
                 <TextBox x:Name="Debug" IsReadOnly="True" FontFamily="YouYuan" FontSize="14" 
                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"

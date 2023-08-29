@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace 图像超分工具.model
 {
@@ -22,5 +23,22 @@ namespace 图像超分工具.model
         public string Name { get; set; }
         public string ImgPath { get; set; }
     }
+    /// <summary>
+    /// 超分参数类
+    /// </summary>
+    class GAN_Func_Class
+    {
+        //所使用的超分工具名称
+        public string model_name { get; set; }
+        //输入文件列表
+        public List<string> files { get; set; }
+        //输出目录
+        public string output_folder { get; set; }
+        //附随参数
+        public string models { get; set; }
+        //其他附随参数
+        public string other_arg { get; set; }
 
+        public TextBox tb { get; set; }
+    }
 }

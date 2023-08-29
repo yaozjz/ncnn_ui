@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using System.Windows.Interop;
 
 namespace 图像超分工具.model
 {
@@ -77,51 +78,79 @@ namespace 图像超分工具.model
                 string output_foder = System.IO.Path.GetDirectoryName(output_path);
                 string filename = Path.GetFileName(input_path);
                 File.Copy(input_path, Path.Combine(output_foder, filename), true);
-                File.Move(System.IO.Path.Combine(output_foder, filename), output_path);                
+                File.Move(System.IO.Path.Combine(output_foder, filename), output_path);
 
                 return true;
             }
-            catch {  return false; }
+            catch { return false; }
         }
         /// <summary>
         /// 开始超分
         /// </summary>
         /// <param name="model_name">超分工具名称</param>
-        /// <param name="inputs">输入文件名</param>
+        /// <param name="files">输入文件名</param>
         /// <param name="outputs">输出文件名</param>
         /// <param name="model">模型</param>
         /// <returns></returns>
-        static public bool Running_GAN(string model_name, string inputs, string outputs, string? model = null, string? other_arg = null)
+        static public void Running_GAN(object arr)
         {
-            try
+            var msg = arr as model.GAN_Func_Class;
+            List<string> files = msg.files;
+            foreach (string file in files)
             {
-                Process p = new();
-                p.StartInfo.FileName = model_name;
-                string arg = string.Format("-i {0} -o {1}", inputs, outputs);
-                if (other_arg != "" || other_arg != null)
+                try
                 {
-                    arg += string.Format(" {0}", other_arg);
+                    string file_name = Path.GetFileName(file);
+                    string model_name = msg.model_name;
+                    string inputs = file;
+                    string outputs = Path.Combine(msg.output_folder, file_name);
+                    Process p = new();
+                    p.StartInfo.FileName = model_name;
+                    string arg = string.Format("-i {0} -o {1}", inputs, outputs);
+                    if (msg.other_arg != "")
+                    {
+                        arg += string.Format(" {0}", msg.other_arg);
+                    }
+                    if (msg.models != null)
+                    {
+                        arg += string.Format(" {0}", msg.models);
+                    }
+                    p.StartInfo.Arguments = arg;
+                    //是否开启Dot窗口
+                    if (!Properties.Settings.Default.ShowDot)
+                    {
+                        p.StartInfo.CreateNoWindow = true;
+                        p.StartInfo.UseShellExecute = false;
+                        p.StartInfo.RedirectStandardOutput = true;
+                    }
+                    p.Start();
+                    string output = "";
+                    if (!Properties.Settings.Default.ShowDot)
+                    {
+                        output = p.StandardOutput.ReadToEnd();
+                    }
+                    p.WaitForExit();
+                    p.Close();
+
+                    Console.WriteLine(output);
+
+                    Application.Current.Dispatcher.InvokeAsync(delegate { msg.tb.AppendText(file_name + " 已完成超分。\r"); });
                 }
-                if (model != null)
+                catch (Exception ex)
                 {
-                    arg += string.Format(" {0}", model);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        msg.tb.AppendText("错误：" + ex.Message + "\r");
+                    });
                 }
-                p.StartInfo.Arguments = arg;
-                p.Start();
-                p.WaitForExit();
-                p.Dispose();
-                return true;
             }
-            catch
-            {
-                return false;
-            }
+            Application.Current.Dispatcher.InvokeAsync(delegate { msg.tb.AppendText("全部超分完毕!\r"); });
         }
 
         static public void OpenFolder(string folderPath)
         {
             Process.Start("explorer.exe", Path.GetFullPath(folderPath));
         }
-
     }
+
 }

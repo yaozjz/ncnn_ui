@@ -5,10 +5,39 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:图像超分工具.UI"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="678" d:DesignWidth="1132"
       Title="Setting">
+    <Page.Resources>
+        <Style TargetType="TextBlock" x:Key="Title">
+            <Setter Property="FontFamily" Value="YouYuan"/>
+            <Setter Property="FontSize" Value="30"/>
+            <Setter Property="Margin" Value="10"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="Text">
+            <Setter Property="FontFamily" Value="YouYuan"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+    </Page.Resources>
 
-    <Grid>
-        
-    </Grid>
+    <DockPanel LastChildFill="True" Background="White" Margin="150 0 150 0">
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="7">
+            <TextBlock Text="保存成功！" Margin="20 10 20 10" FontSize="14" Visibility="Collapsed" x:Name="SaveDone_msg"/>
+            <Button Width="80" Height="40" Margin="10" FontSize="20" Style="{StaticResource dgButton}" Template="{StaticResource buttonTemplate}"
+                    Click="Save_config_Click">保存</Button>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="10">
+            <StackPanel Orientation="Horizontal" >
+                <TextBlock Text="常规设定" Style="{StaticResource Title}"/>
+            </StackPanel>
+            <Separator HorizontalAlignment="Left" VerticalAlignment="Center" Width="300"/>
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <TextBlock Text="超分辨率时是否显示命令行窗口：" Style="{StaticResource Text}"/>
+                <CheckBox IsChecked="True" x:Name="IsShowDot" />
+            </StackPanel>
+        </StackPanel>
+    </DockPanel>
 </Page>

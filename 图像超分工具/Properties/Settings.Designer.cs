@@ -46,5 +46,17 @@ namespace 图像超分工具.Properties {
                 this["DrtFolder"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowDot {
+            get {
+                return ((bool)(this["ShowDot"]));
+            }
+            set {
+                this["ShowDot"] = value;
+            }
+        }
     }
 }

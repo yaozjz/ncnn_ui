@@ -26,3 +26,4 @@ D:\project\programe\csharp\图像超分工具\图像超分工具\obj\Debug\net6.
 D:\project\programe\csharp\图像超分工具\图像超分工具\obj\Debug\net6.0-windows\UI\NCNNmain.baml
 D:\project\programe\csharp\图像超分工具\图像超分工具\obj\Debug\net6.0-windows\UI\Setting.g.cs
 D:\project\programe\csharp\图像超分工具\图像超分工具\obj\Debug\net6.0-windows\UI\Setting.baml
+D:\project\programe\csharp\图像超分工具\图像超分工具\obj\Debug\net6.0-windows\App.baml
