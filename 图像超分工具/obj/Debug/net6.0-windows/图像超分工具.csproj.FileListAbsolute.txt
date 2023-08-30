@@ -20,7 +20,6 @@ D:\project\programe\csharp\图像超分工具\图像超分工具\obj\Debug\net6.
 D:\project\programe\csharp\图像超分工具\图像超分工具\obj\Debug\net6.0-windows\图像超分工具.pdb
 D:\project\programe\csharp\图像超分工具\图像超分工具\obj\Debug\net6.0-windows\图像超分工具.genruntimeconfig.cache
 D:\project\programe\csharp\图像超分工具\图像超分工具\obj\Debug\net6.0-windows\ref\图像超分工具.dll
-D:\project\programe\csharp\图像超分工具\图像超分工具\bin\Debug\net6.0-windows\image\listico.png
 D:\project\programe\csharp\图像超分工具\图像超分工具\bin\Debug\net6.0-windows\图像超分工具.dll.config
 D:\project\programe\csharp\图像超分工具\图像超分工具\obj\Debug\net6.0-windows\UI\NCNNmain.g.cs
 D:\project\programe\csharp\图像超分工具\图像超分工具\obj\Debug\net6.0-windows\UI\NCNNmain.baml

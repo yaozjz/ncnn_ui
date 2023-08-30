@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:图像超分工具"
         mc:Ignorable="d"
         Title="图像批量超分工具" Height="634" Width="1132"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen" Closing="MainWin_Closed">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="90"/>

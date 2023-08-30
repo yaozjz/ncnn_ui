@@ -9,6 +9,5 @@
 //------------------------------------------------------------------------------
 
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("cover.ico")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("image/listico.png")]
 
 

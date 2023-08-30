@@ -58,5 +58,41 @@ namespace 图像超分工具.Properties {
                 this["ShowDot"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1132")]
+        public double WinWidth {
+            get {
+                return ((double)(this["WinWidth"]));
+            }
+            set {
+                this["WinWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("634")]
+        public double WinHeight {
+            get {
+                return ((double)(this["WinHeight"]));
+            }
+            set {
+                this["WinHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        public double ListViewWidth {
+            get {
+                return ((double)(this["ListViewWidth"]));
+            }
+            set {
+                this["ListViewWidth"] = value;
+            }
+        }
     }
 }

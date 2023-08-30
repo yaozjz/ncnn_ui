@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:图像超分工具"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+
         <Style x:Key="MenuButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>

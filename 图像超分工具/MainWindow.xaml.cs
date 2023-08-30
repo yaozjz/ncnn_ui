@@ -29,6 +29,11 @@ namespace 图像超分工具
             _ = model.ConfigFileCreate.CreateDir(Properties.Settings.Default.SrcFolder);
             _ = model.ConfigFileCreate.CreateDir(Properties.Settings.Default.DrtFolder);
             MainContent.Content = new UI.NCNNmain();
+
+            //读取上一次窗口状态
+            Width = Properties.Settings.Default.WinWidth;
+            Height = Properties.Settings.Default.WinHeight;
+            WindowState = Properties.Settings.Default.SavedWindowState;
         }
 
         private void Setting_Click(object sender, RoutedEventArgs e)
@@ -39,6 +44,16 @@ namespace 图像超分工具
         private void NCNN_Click(object sender, RoutedEventArgs e)
         {
             MainContent.Content = new UI.NCNNmain();
+        }
+        //窗口关闭
+
+        private void MainWin_Closed(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Properties.Settings.Default.SavedWindowState = WindowState;
+            Properties.Settings.Default.WinHeight = Height;
+            Properties.Settings.Default.WinWidth = Width;
+
+            Properties.Settings.Default.Save();
         }
     }
 }
