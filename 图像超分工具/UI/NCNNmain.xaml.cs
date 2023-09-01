@@ -128,6 +128,7 @@ namespace 图像超分工具.UI
             List<string> files_name = new List<string>();
             if (files != null)
             {
+                ShowLog("开始超分。");
                 foreach (var file in files)
                 {
                     //转化为绝对路径，以确保异步线程路径正确
