@@ -25,8 +25,7 @@ namespace 图像超分工具
         public MainWindow()
         {
             InitializeComponent();
-            //创建输入输出文件夹
-            _ = model.ConfigFileCreate.CreateDir(Properties.Settings.Default.SrcFolder);
+            //创建输出文件夹
             _ = model.ConfigFileCreate.CreateDir(Properties.Settings.Default.DrtFolder);
             MainContent.Content = new UI.NCNNmain();
 

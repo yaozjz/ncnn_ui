@@ -15,14 +15,10 @@ namespace 图像超分工具.model
         static private string[] RealCURAN = { "-s 2 -n 1 -x #放大二倍", "-s 3 -n 3 -x #放大三倍", "-s 4 -n 3 -x #放大四倍", "-s 2", "-s 3", "-s 4"};
 
         static public List<string[]> NCNN_Arg = new List<string[]>() { RealESRGAN, RealCURAN };
+
+        static public List<string> ImgFormat = new List<string>() { ".png", ".jpg" };
     }
 
-    class ImgList
-    {
-        public int ID { get; set; }
-        public string Name { get; set; }
-        public string ImgPath { get; set; }
-    }
     /// <summary>
     /// 超分参数类
     /// </summary>

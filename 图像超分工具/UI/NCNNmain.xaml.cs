@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -24,37 +27,17 @@ namespace 图像超分工具.UI
     /// </summary>
     public partial class NCNNmain : Page
     {
+        //列表显示
+        private ObservableCollection<string> fileList = new ObservableCollection<string>();
         void ShowLog(string msg)
         {
             Debug.AppendText(msg + "\r");
         }
 
-        void Cheked_Foder()
-        {
-            var files = model.ToolsUsed.Get_Folder(Properties.Settings.Default.SrcFolder);
-            List<model.ImgList> img_list = new();
-            if (files != null)
-            {
-                int counter = 0;
-                foreach (var file_name in files)
-                {
-                    //ShowLog(file_name);
-                    img_list.Add(new model.ImgList() { ID = counter, Name = System.IO.Path.GetFileName(file_name), ImgPath = file_name });
-                    counter++;
-                }
-                ImgListview.ItemsSource = img_list;
-                ImgListview.SelectedIndex = 0;
-            }
-            else
-            {
-                ShowLog("路径下没有找到合适的图片文件，请添加jpg或png图片文件后再点击检查按钮。");
-            }
-        }
-
         public NCNNmain()
         {
             InitializeComponent();
-            Cheked_Foder();
+            ImgListview.ItemsSource = fileList;
             initNCNNList(model.GAN_Model_Name.NCNN_Arg[0]);
         }
 
@@ -88,34 +71,16 @@ namespace 图像超分工具.UI
                 //点击确认键后开始清除原有文件
                 ImgSrc.Source = null;
                 GC.Collect();
-                //清除输入文件夹
-                model.ToolsUsed.ClearFoderFile(Properties.Settings.Default.SrcFolder);
                 //转移文件数据
                 List<string> selectedImagePaths = new List<string>(openFileDialog.FileNames);
-                List<model.ImgList> img_list = new();
-                int counter = 0;
                 foreach (string imagePath in selectedImagePaths)
                 {
-                    string name = System.IO.Path.GetFileName(imagePath);
-                    //复制并重命名图片
-                    //ShowLog("输入：" + imagePath);
-                    string out_putimg = System.IO.Path.Combine(Properties.Settings.Default.SrcFolder, counter.ToString() + System.IO.Path.GetExtension(imagePath));
-                    out_putimg = System.IO.Path.GetFullPath(out_putimg);
-                    //ShowLog("输出文件：" + out_putimg);
-                    model.ToolsUsed.CopyAndRename(imagePath, out_putimg);
-                    img_list.Add(new model.ImgList() { ID = counter, Name = name, ImgPath = imagePath });
-                    counter++;
+                    if (!fileList.Contains(imagePath))
+                        fileList.Add(imagePath);
                 }
-                ImgListview.ItemsSource = img_list;
-                ImgListview.SelectedIndex = 0;
             }
         }
 
-        //检查文件
-        private void CheckList_clik(object sender, RoutedEventArgs e)
-        {
-            Cheked_Foder();
-        }
         /// <summary>
         /// 开始超分
         /// </summary>
@@ -123,44 +88,32 @@ namespace 图像超分工具.UI
         /// <param name="e"></param>
         private void Begingo_Click(object sender, RoutedEventArgs e)
         {
-            //获取输入文件夹下的所有文件
-            var files = model.ToolsUsed.Get_Folder(Properties.Settings.Default.SrcFolder);
-            List<string> files_name = new List<string>();
-            if (files != null)
+            if (fileList.Count > 0)
             {
-                ShowLog("开始超分。");
-                foreach (var file in files)
-                {
-                    //转化为绝对路径，以确保异步线程路径正确
-                    files_name.Add(System.IO.Path.GetFullPath(file));
-                }
                 //清空输出文件夹：
-                model.ToolsUsed.ClearFoderFile(Properties.Settings.Default.DrtFolder);
+                //model.ToolsUsed.ClearFoderFile(Properties.Settings.Default.DrtFolder);
+                //初始化参数
+                string model_name = model.GAN_Model_Name.NCNN_Name[ncnnModelSeleced.SelectedIndex];//执行文件名称
+                model.RunTerminal run = new model.RunTerminal() { EXEPath = model_name };
+                string output_folder = System.IO.Path.GetFullPath(Properties.Settings.Default.DrtFolder);   //输出文件夹
+                string models = GAN_models.SelectedItem.ToString().Trim(); //使用的模组的名称
+                int counter = 0;
+                List<string> args = new List<string>();
+                foreach (string file in fileList)
+                {
+                    string outputs = System.IO.Path.Combine(output_folder, $"{counter}.png");
+                    string arg = $"-i \"{file}\" -o \"{outputs}\"";
+                    if (models != string.Empty)
+                        arg += $" {models}";
+                    args.Add(arg);
+                    counter++;
+                }
+                run.BatchStartAndStreamOut(args, Debug);
             }
             else
             {
                 ShowLog("没有找到图片文件");
                 return;
-            }
-
-            if (files_name != null)
-            {
-                var arg = new model.GAN_Func_Class
-                {
-                    files = files_name,
-                    models = GAN_models.SelectedItem.ToString(),
-                    other_arg = OtherArg.Text.Trim(),
-                    model_name = model.GAN_Model_Name.NCNN_Name[ncnnModelSeleced.SelectedIndex],
-                    output_folder = System.IO.Path.GetFullPath(Properties.Settings.Default.DrtFolder),
-                    tb = Debug
-                };
-                foreach (var file in files)
-                {
-                    Console.WriteLine("列表：" + file);
-                }
-                //后台线程
-                Thread t = new Thread(model.ToolsUsed.Running_GAN) { IsBackground = true };
-                t.Start(arg);
             }
         }
         //点击并显示图片
@@ -168,24 +121,22 @@ namespace 图像超分工具.UI
         {
             if (ImgListview.SelectedItem != null)
             {
-                model.ImgList selections = (model.ImgList)ImgListview.SelectedItem;
+                string selections = ImgListview.SelectedItem.ToString();
                 BitmapImage bitmapImage = new();
                 bitmapImage.BeginInit();
                 //将图片加载到内存中,以防止本地图片资源被占用
                 bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.UriSource = new Uri(System.IO.Path.GetFullPath(selections.ImgPath));
+                bitmapImage.UriSource = new Uri(selections);
                 bitmapImage.EndInit();
                 ImgSrc.Source = bitmapImage;
                 bitmapImage.UriSource = null;
-
-                //ShowLog(selections.ImgPath);
             }
         }
 
         private void Debug_TextChange(object sender, TextChangedEventArgs e)
         {
             //防止内存泄漏
-            if(Debug.LineCount > 1001)
+            if (Debug.LineCount > 3001)
             {
                 Debug.Text = Debug.Text.Substring(Debug.GetLineText(0).Length + 1);
             }
@@ -197,11 +148,7 @@ namespace 图像超分工具.UI
         {
             model.ToolsUsed.OpenFolder(Properties.Settings.Default.DrtFolder);
         }
-        //在资源管理器中打开输如文件夹
-        private void OpenSrcFoder_Click(object sender, RoutedEventArgs e)
-        {
-            model.ToolsUsed.OpenFolder(Properties.Settings.Default.SrcFolder);
-        }
+
         //选择的超分模型发生变化
         private void ncnnSelectionChange(object sender, SelectionChangedEventArgs e)
         {
@@ -214,6 +161,56 @@ namespace 图像超分工具.UI
         private void ClearLog_Click(object sender, RoutedEventArgs e)
         {
             Debug.Text = "";
+        }
+        //拖拽行为
+        private void fileListView_DragEnter(object sender, DragEventArgs e)
+        {
+            // 检查拖拽的数据是否包含文件
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effects = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effects = DragDropEffects.None;
+            }
+        }
+
+        private void fileListView_Drop(object sender, DragEventArgs e)
+        {
+            // 获取拖拽的文件路径
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            // 添加文件路径到列表
+            foreach (var file in files)
+            {
+                string extension = System.IO.Path.GetExtension(file).ToLowerInvariant();
+                if (!fileList.Contains(file) && model.GAN_Model_Name.ImgFormat.Contains(extension))
+                {
+                    fileList.Add(file);
+                }
+            }
+        }
+        /// <summary>
+        /// 移除当前选中
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RemoveSelected_Click(object sender, RoutedEventArgs e)
+        {
+            if (ImgListview.SelectedItem != null)
+            {
+                string selectedFile = ImgListview.SelectedItem.ToString();
+                fileList.Remove(selectedFile);
+            }
+        }
+        /// <summary>
+        /// 清除列表
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ListClear_Click(object sender, RoutedEventArgs e)
+        {
+            fileList.Clear();
         }
     }
 }

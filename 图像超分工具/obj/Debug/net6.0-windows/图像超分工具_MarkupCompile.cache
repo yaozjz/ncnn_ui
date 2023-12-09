@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-D:\project\programe\csharp\图像超分工具\图像超分工具\obj\Debug\net6.0-windows\
+G:\code_and_project\programe\csharp\own_project\图像超分工具\图像超分工具\obj\Debug\net6.0-windows\
 图像超分工具
 none
 false
 TRACE;DEBUG;NET;NET6_0;NETCOREAPP
-D:\project\programe\csharp\图像超分工具\图像超分工具\App.xaml
+G:\code_and_project\programe\csharp\own_project\图像超分工具\图像超分工具\App.xaml
 3-1027820742
 1-1669144244
-10332585468
-194-1976662911
+11-1517365279
+194786885472
 MainWindow.xaml;UI\NCNNmain.xaml;UI\Setting.xaml;
 
 False

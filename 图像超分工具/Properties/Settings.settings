@@ -2,14 +2,8 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="图像超分工具.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="SrcFolder" Type="System.String" Scope="User">
-      <Value Profile="(Default)">.\input_img</Value>
-    </Setting>
     <Setting Name="DrtFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)">.\output_img</Value>
-    </Setting>
-    <Setting Name="ShowDot" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="WinWidth" Type="System.Double" Scope="User">
       <Value Profile="(Default)">1132</Value>

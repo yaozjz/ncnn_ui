@@ -9,6 +9,7 @@ using System.Windows;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.Windows.Interop;
+using Microsoft.Win32;
 
 namespace 图像超分工具.model
 {
@@ -84,72 +85,38 @@ namespace 图像超分工具.model
             }
             catch { return false; }
         }
-        /// <summary>
-        /// 开始超分
-        /// </summary>
-        /// <param name="model_name">超分工具名称</param>
-        /// <param name="files">输入文件名</param>
-        /// <param name="outputs">输出文件名</param>
-        /// <param name="model">模型</param>
-        /// <returns></returns>
-        static public void Running_GAN(object arr)
-        {
-            var msg = arr as model.GAN_Func_Class;
-            List<string> files = msg.files;
-            foreach (string file in files)
-            {
-                try
-                {
-                    string file_name = Path.GetFileName(file);
-                    string model_name = msg.model_name;
-                    string inputs = file;
-                    string outputs = Path.Combine(msg.output_folder, file_name);
-                    Process p = new();
-                    p.StartInfo.FileName = model_name;
-                    string arg = string.Format("-i {0} -o {1}", inputs, outputs);
-                    if (msg.other_arg != "")
-                    {
-                        arg += string.Format(" {0}", msg.other_arg);
-                    }
-                    if (msg.models != null)
-                    {
-                        arg += string.Format(" {0}", msg.models);
-                    }
-                    p.StartInfo.Arguments = arg;
-                    //是否开启Dot窗口
-                    if (!Properties.Settings.Default.ShowDot)
-                    {
-                        p.StartInfo.CreateNoWindow = true;
-                        p.StartInfo.UseShellExecute = false;
-                        p.StartInfo.RedirectStandardOutput = true;
-                    }
-                    p.Start();
-                    string output = "";
-                    if (!Properties.Settings.Default.ShowDot)
-                    {
-                        output = p.StandardOutput.ReadToEnd();
-                    }
-                    p.WaitForExit();
-                    p.Close();
-
-                    Console.WriteLine(output);
-
-                    Application.Current.Dispatcher.InvokeAsync(delegate { msg.tb.AppendText(file_name + " 已完成超分。\r"); });
-                }
-                catch (Exception ex)
-                {
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        msg.tb.AppendText("错误：" + ex.Message + "\r");
-                    });
-                }
-            }
-            Application.Current.Dispatcher.InvokeAsync(delegate { msg.tb.AppendText("全部超分完毕!\r"); });
-        }
 
         static public void OpenFolder(string folderPath)
         {
             Process.Start("explorer.exe", Path.GetFullPath(folderPath));
+        }
+        /// <summary>
+        /// 获取单个文件
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="filter"></param>
+        /// <param name="isFolder"></param>
+        /// <returns></returns>
+        public static string OpenFile(string title, string filter, bool isFolder = false)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog()
+            {
+                Title = title,
+                Filter = filter
+            };
+            if (isFolder)
+            {
+                openFileDialog.CheckFileExists = false;
+                openFileDialog.CheckPathExists = true;
+                openFileDialog.FileName = "选择文件夹";
+            }
+            if (openFileDialog.ShowDialog() == true)
+            {
+                if (isFolder)
+                    return Path.GetDirectoryName(openFileDialog.FileName);
+                return openFileDialog.FileName;
+            }
+            return "";
         }
     }
 

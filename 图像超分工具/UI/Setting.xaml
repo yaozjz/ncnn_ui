@@ -35,8 +35,9 @@
             </StackPanel>
             <Separator HorizontalAlignment="Left" VerticalAlignment="Center" Width="300"/>
             <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="超分辨率时是否显示命令行窗口：" Style="{StaticResource Text}"/>
-                <CheckBox IsChecked="True" x:Name="IsShowDot" />
+                <TextBlock Text="输出文件夹：" Style="{StaticResource Text}"/>
+                <TextBox x:Name="OutputDir" Width="400" Margin="0 0 20 0" VerticalAlignment="Center" />
+                <Button Content="浏览" Style="{StaticResource dgButton}" Template="{StaticResource buttonTemplate}" Width="60" Click="ViewOutDir_Click"/>
             </StackPanel>
         </StackPanel>
     </DockPanel>

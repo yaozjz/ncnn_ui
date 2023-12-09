@@ -28,12 +28,12 @@ namespace 图像超分工具.UI
         }
         void init_ctrl()
         {
-            IsShowDot.IsChecked = Properties.Settings.Default.ShowDot;
+            OutputDir.Text = Properties.Settings.Default.DrtFolder;
         }
 
         private async void Save_config_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.ShowDot = (bool)IsShowDot.IsChecked;
+            Properties.Settings.Default.DrtFolder = OutputDir.Text.Trim();
 
             Properties.Settings.Default.Save();
             SaveDone_msg.Visibility = Visibility.Visible;
@@ -45,6 +45,16 @@ namespace 图像超分工具.UI
                     SaveDone_msg.Visibility = Visibility.Collapsed;
                 });
             });
+        }
+
+        private void ViewOutDir_Click(object sender, RoutedEventArgs e)
+        {
+            var result = model.ToolsUsed.OpenFile("选择输出文件夹", "文件夹 | *.*", true);
+            if (result != string.Empty)
+            {
+                _ = model.ConfigFileCreate.CreateDir(result);
+                OutputDir.Text = result;
+            }
         }
     }
 }
